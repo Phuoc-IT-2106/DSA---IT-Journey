@@ -68,7 +68,6 @@ vector<int>MoveZero(vector<int>&a){
 }
 
 //REMOVE DUPLICATES FROM THE ARRAY(SORTED ARRAY)
-
 vector<int>RemoveDuplicates(vector<int>&a){
     int left = 1;
     for(int right = 1; right < a.size(); right++){
