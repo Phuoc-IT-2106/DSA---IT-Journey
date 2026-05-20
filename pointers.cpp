@@ -82,6 +82,59 @@ vector<int>RemoveDuplicates(vector<int>&a){
     }
     return result;
 }
+
+//REMOVE ELEMENT - https://leetcode.com/problems/remove-element/description/?envType=problem-list-v2&envId=two-pointers
+int RemoveElement(vector<int>&a, int val){
+    int left = 0;
+    for(int right = 0; right < a.size(); right++){
+        if(a[right] != val) {
+            a[left] = a[right];
+            left++;
+        }
+    }
+    return left;
+}
+
+//SQUARE OF A SORTED ARRAY - https://leetcode.com/problems/squares-of-a-sorted-array/description/?envType=problem-list-v2&envId=two-pointers
+vector<int>Square_SortedArray(vector<int>&a){
+    vector<int>result(a.size());
+    int index = a.size()- 1;
+    int left = 0;
+    int right = a.size()-1;
+    while(left <= right){
+        if(abs(a[left]) > abs(a[right])){
+             result[index]   = a[left] * a[left];
+             left++;
+        }
+        else {
+             result[index]   = a[right] * a[right];
+             right--;
+        }
+        index--;
+        }
+    return result;
+}
+
+//REVERSE VOWEL OF A STRING - https://leetcode.com/problems/reverse-vowels-of-a-string/description/?envType=problem-list-v2&envId=two-pointers
+bool CheckVowel(char a){
+    return (a == 'a') || (a == 'e') || (a == 'u') || (a == 'i') || (a == 'o') ;
+}
+string ReverseVowels(string s){
+    int left = 0;
+    int right = s.size() - 1;
+    while(left < right){
+    while(left < right && !CheckVowel(s[left])) left++;
+    while(left < right && !CheckVowel(s[right])) right--;
+    if(left < right){
+        swap(s[left], s[right]);
+        left++;
+        right--;
+    }
+    }
+    return s;
+}
+
+//REVERSE STRING II - https://leetcode.com/problems/reverse-string-ii/description/?envType=problem-list-v2&envId=two-pointers
 };
 
 
@@ -99,11 +152,15 @@ int main()
     //sol.print(result);
     //cout << sol.IsPalindrome("hello");
     //cout << sol.ReverseString("hello");
-    vector<int>arr2 = {0,2,0,4,0,6,7};
-    vector<int>result2 = sol.MoveZero(arr2);
+    vector<int>arr2 = {0,0,0,2,4,6,7};
+    //vector<int>result2 = sol.MoveZero(arr2);
     //sol.print(result2);
     vector<int>result3 = sol.RemoveDuplicates(arr2);
-    sol.print(result3);
+    //sol.print(result3);
+   // cout << sol.RemoveElement(arr2,0);
+    vector<int>result4 = sol.Square_SortedArray(result3);
+    //sol.print(result4);
+    cout << sol.ReverseVowels("hello");
     return 0;
     
 }
