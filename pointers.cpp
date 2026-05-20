@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 using namespace std;
 //FIND 2 NUMBERS THAT TOTAL = TARGET (SORTED ARRAY)
 class Solution{
@@ -134,14 +135,85 @@ string ReverseVowels(string s){
     return s;
 }
 
+//REVERSE STRING II - https://leetcode.com/problems/reverse-string-ii/description/?envType=problem-list-v2&envId=two-pointers
+string ReverseStringII(string s, int k){
+    int n = s.length();
+    for(int i = 0; i < n; i+= 2*k){
+        int left = i;
+        int right = min(i + k - 1, n);
+    while(left < right){
+        swap(s[left], s[right]);
+        left++;
+        right--;
+    }
+    }
+    return s;
+}
+
+//THREE SUM - https://leetcode.com/problems/3sum/description/?envType=problem-list-v2&envId=two-pointers
+
+vector<vector<int>>ThreeSum(vector<int>&a){
+    vector<vector<int>> result;
+    int n = a.size();
+    sort(a.begin(),a.end());
+    for(int i = 0; i < n - 2; i++){
+        if(i > 0 && a[i] == a[i-1]) continue;
+        int target = -a[i];
+        int left = i + 1;
+        int right = n - 1;
+        while(left < right){
+        int sum = a[left] + a[right];
+        if(sum == target){
+            result.push_back({a[i],a[left],a[right]});
+            while(left < right && a[left] == a[left + 1]) left++;
+            while(left < right && a[right] == a[right - 1]) right--;
+            left++;
+            right--;
+        }
+        else if(sum < target) left++;
+        else right--;
+        
+    }
+    
+}
+    return result;
+}
+
+//PRINT FUNCTION
+void printResult(vector<vector<int>>& result) {
+    cout << "[";
+    for (int i = 0; i < result.size(); i++) {
+        cout << "[";
+        for (int j = 0; j < result[i].size(); j++) {
+            cout << result[i][j];
+            if (j < result[i].size() - 1) cout << ",";
+        }
+        cout << "]";
+        if (i < result.size() - 1) cout << ",";
+    }
+    cout << "]";
+}
+
+//THREE SUM CLOSET - https://leetcode.com/problems/3sum-closest/description/?envType=problem-list-v2&envId=two-pointers
+int ThreeSumCloset(vector<int>&a, int target){
+    sort(a.begin(),a.end());
+    int n = a.size();
+    int closet = a[0] + a[1] + a[2];
+    for(int i = 0; i < n - 2; i++){
+        int left = i + 1;
+        int right = n - 1;
+        while(left < right){
+        int sum = a[i] + a[left] + a[right];
+        if(abs(sum - target) < abs(closet - target)) closet = sum;
+        else if(sum == target) return sum;
+        else if(sum < target ) left++;
+        else right--;
+        }
+}
+    return closet;
+}
+
 };
-
-
-
-
-
-
-
 int main()
 {
     Solution sol;
@@ -159,7 +231,14 @@ int main()
    // cout << sol.RemoveElement(arr2,0);
     vector<int>result4 = sol.Square_SortedArray(result3);
     //sol.print(result4);
-    cout << sol.ReverseVowels("hello");
+    //cout << sol.ReverseVowels("hello");
+    //cout << "HelloWorld1234\n";
+    //cout << sol.ReverseStringII("HelloWorld1234",2);
+    vector<int> nums = {-1,0,1,2,-1,-4};
+    vector<vector<int>> temp = sol.ThreeSum(nums);
+    //sol.printResult(temp);
+    vector<int> test = {-1,2,1,-4};
+    cout << sol.ThreeSumCloset(test,1);
     return 0;
     
 }
