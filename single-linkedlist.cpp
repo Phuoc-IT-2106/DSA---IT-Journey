@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <unordered_set>
 using namespace std;
 struct NODE{
         int data;
@@ -75,7 +76,7 @@ class Solution{
         //DELETE FIRST VAL OF LIST
         NODE* DeleteFirstVal(NODE*head, int val){
             if(!head) return nullptr;
-            if(head->data == val) DeleteHead(head);
+            if(head->data == val) return DeleteHead(head);
             NODE* current = head;
             while(current && current->next){
                 if(current->next->data == val){
@@ -133,7 +134,7 @@ class Solution{
             return result;
         }
         NODE* DeleteAllTarget(NODE* head, int target){
-            while(head && head->data == target) DeleteHead(head);
+            while(head && head->data == target) head = DeleteHead(head);
             if(!head) return nullptr;
             NODE* current = head;
             while(current && current->next){
@@ -165,29 +166,117 @@ class Solution{
             }
             return head;
         }
+
+        //MERGE SORTED LISTS - https://leetcode.com/problems/merge-two-sorted-lists/description/
+        NODE* MergetwoSortedList(NODE* head1, NODE* head2){
+            NODE* dummy = createNODE(0);
+            NODE* current = dummy;
+            while(head1 && head2){
+                if(head1->data <= head2->data){
+                    current->next = head1;
+                    current = current->next;
+                    head1 = head1->next;
+                }
+                else{
+                    current->next = head2;
+                    current  = current->next;
+                    head2 = head2->next;
+                }
+            }
+            if(head1){
+                current->next = head1;
+            }
+            if(head2){
+                current->next = head2;
+            }
+            NODE* mergehead = dummy->next;
+            delete dummy;
+            return mergehead;
+        }
+
+        //https://leetcode.com/problems/delete-nodes-from-linked-list-present-in-array/description/?envType=problem-list-v2&envId=linked-list
+        NODE* DeleteAll_In_Array(NODE* head, vector<int>&a){
+            unordered_set<int> to_remove;
+            for(int i = 0; i < a.size(); i++){
+                to_remove.insert(a[i]);
+            }
+            while(head && to_remove.count(head->data)){
+                head = DeleteHead(head);
+            }
+            if(!head) return nullptr;
+            NODE* current = head;
+            while(current && current->next){
+                if(to_remove.count(current->next->data)){
+                    NODE* temp = current->next;
+                    current->next = temp->next;
+                    delete temp;
+                }
+                else current = current->next;
+            }
+            return head;
+        }
+
+        //REVERSE SINGLE LINKED LIST
+        NODE* ReverseSingleList(NODE* head){
+            if(!head || !head->next) return head;
+            NODE* prev = nullptr;
+            NODE* current = head;
+            while(current){
+                NODE* next = current->next;
+                current->next = prev;
+                prev = current;
+                current = next;
+            }
+            return prev;
+        }
+
+        //REVERSE LINKED LIST II - https://leetcode.com/problems/reverse-linked-list-ii/description/?envType=problem-list-v2&envId=linked-list
+    NODE* ReverseLeftToRight(NODE* head, int left, int right){
+        if(!head || !head->next || left == right) return head;
+        NODE* dummy = createNODE(0);
+        dummy->next = head;
+        NODE* prev = dummy;
+        for(int i = 1; i < left; i++){
+            prev = prev->next;
+        }
+        NODE* leftNODE = prev->next;
+        NODE* rightNODE = leftNODE;
+        for(int i = left; i < right; i++){
+            rightNODE = rightNODE -> next;
+        }
+        NODE* afterRight = rightNODE->next;
+        prev->next = nullptr;
+        rightNODE->next = nullptr;
+        NODE* reserved_head = ReverseSingleList(leftNODE);
+        prev->next = reserved_head;
+        leftNODE->next = afterRight;
+        NODE* result = dummy->next;
+        delete dummy;
+        return result;
+    }
 };
 int main(){
     Solution sol;
     vector<int>arr = {1,2,3,4,5};
     NODE* p = sol.createList(arr);
-    sol.printList(p);
-    cout << "LIST AFTER INSERT HEAD\n";
+    //sol.printList(p);
+    //cout << "LIST AFTER INSERT HEAD\n";
     NODE* p2 = sol.InsertHead(p,6);
-    sol.printList(p2);
-    cout << "LIST AFTER INSERT TAIL\n";
+    //sol.printList(p2);
+    //cout << "LIST AFTER INSERT TAIL\n";
     NODE* p3 = sol.InsertTail(p2,7);
-    sol.printList(p3);
-    cout << "LIST AFTER DELETE HEAD\n ";
+    //sol.printList(p3);
+    //cout << "LIST AFTER DELETE HEAD\n ";
     NODE* p4 = sol.DeleteHead(p3);
-    sol.printList(p4);
-    cout << "LIST AFTER DELETE TAIL\n";
+    //sol.printList(p4);
+    //cout << "LIST AFTER DELETE TAIL\n";
     NODE* p5 = sol.DeleteTail(p4);
-    sol.printList(p5);
+    //sol.printList(p5);
     NODE* p6 = sol.DeleteFirstVal(p5,3);
-    sol.printList(p6);
+    //sol.printList(p6);
     NODE* p7 = sol.InsertAtPos(p6,1,10);
     NODE* p8 = sol.InsertTail(p7,2);
-    sol.printList(p8);
+    //sol.printList(p8);
     //cout << sol.CountOccurance(p8,2) << endl;
     //vector<int>result = sol.PositionsOfTarget(p8,2);
     //for(int i = 0; i < result.size(); i++){
@@ -197,8 +286,23 @@ int main(){
     //sol.printList(p9);
     NODE* p9 = sol.InsertTail(p8,10);
     NODE* p10 = sol.InsertHead(p9,1);
-    sol.printList(p10);
+    //sol.printList(p10);
     NODE* p11 = sol.RemoveDuplicates(p10);
-    sol.printList(p11);
+    //sol.printList(p11);
+    vector<int> L1 = {1,3,5,7,9};
+    vector<int> L2 = {2,4,6,8,10,12};
+    NODE* head1 = sol.createList(L1);
+    NODE* head2 = sol.createList(L2);
+    //sol.printList(head1);
+    //sol.printList(head2);
+    //NODE* mergelist = sol.MergetwoSortedList(head1,head2);
+    //sol.printList(p11);
+    vector<int> arr2 = {1,2,3,4,5};
+    vector<int> nums = {1,2,3};
+    NODE* arr2_head = sol.createList(arr2);
+    //NODE* new_arr2_head = sol.DeleteAll_In_Array(arr2_head,nums);
+    sol.printList(arr2_head);
+    NODE* reversed = sol.ReverseSingleList(arr2_head);
+    sol.printList(reversed);
     return 0;
 }
